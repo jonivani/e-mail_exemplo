@@ -10,18 +10,18 @@
 #INCLUDE "APWEBSRV.CH"
 #INCLUDE "SHELL.CH"
 
-/*/{Protheus.doc} U_SEL144()
-	Função para enviar e-mail de notifição de notas entregues
-	Faturamento -> relatórios -> Notas ficais ->  Notificação NF Não Entregue
+/*/{Protheus.doc} U_ENV144()
+	FunÃ§Ã£o para enviar e-mail de notifiÃ§Ã£o de notas entregues
+	Faturamento -> relatÃ³rios -> Notas ficais ->  NotificaÃ§Ã£o NF NÃ£o Entregue
 	@author Vamilly - Jonivani
 	@since 19/01/2023
-	@param  MV_SEL144T
-			MV_SEL144Vm
+	@param  MV_ENV144T
+			MV_ENV144Vm
 /*/
 
-User Function SEL144()
-	Local cPergunta   := "Deseja enviar o e-mail de notas não entregue?"
-	Local cTitulo     := "SEL144"
+User Function ENV144()
+	Local cPergunta   := "Deseja enviar o e-mail de notas nÃ£o entregue?"
+	Local cTitulo     := "ENV144"
 	Local nX          := 0
 	Local nV          := 0
 	Local nEnvTrans   := 1
@@ -42,33 +42,33 @@ User Function SEL144()
 	Private cBCC      := ""
 	Private cNota     := ""
 	Private lJob      :=( Type( "oMainWnd" ) <> "O" ) //(IsBlind())
-	Private cSel144t  := Space(60) // MV_SEL144T -> Parametro de e-mail copia para trasnportadora
-	Private cSel144v  := Space(60) // MV_SEL144V -> Parametro de e-mail copia por vendedor 
-	Private aSel144t  := {}
-	Private aSel144v  := {}
+	Private cENV144t  := Space(60) // MV_ENV144T -> Parametro de e-mail copia para trasnportadora
+	Private cENV144v  := Space(60) // MV_ENV144V -> Parametro de e-mail copia por vendedor 
+	Private aENV144t  := {}
+	Private aENV144v  := {}
 
 	
 	If !lJob
-		// cPara := FwInputBox("Qual o E-mail que deseja enviar o relatório?", cPara)
-		// If FwAlertNoYes("Deseja alterar os parâmetros de E-mail copia?",cTitulo)
+		// cPara := FwInputBox("Qual o E-mail que deseja enviar o relatÃ³rio?", cPara)
+		// If FwAlertNoYes("Deseja alterar os parÃ¢metros de E-mail copia?",cTitulo)
 
-		// 	aadd(aPergs, {1, "MV_SEL144T ", cSel144t, "@!", ".T.", "", ".T.", 120, .T.})
-		// 	aadd(aPergs, {1, "MV_SEL144V ", cSel144v, "@!", ".T.", "", ".T.", 120, .T.})
+		// 	aadd(aPergs, {1, "MV_ENV144T ", cENV144t, "@!", ".T.", "", ".T.", 120, .T.})
+		// 	aadd(aPergs, {1, "MV_ENV144V ", cENV144v, "@!", ".T.", "", ".T.", 120, .T.})
 			
-		// 	If ParamBox(aPergs, "Informe os parâmetros")
-		// 		cSel144t := MV_PAR01
-		// 		cSel144v := MV_PAR02
-		// 		PUTMV("MV_SEL144T", cSel144t)
-		// 		PUTMV("MV_SEL144V", cSel144v)
+		// 	If ParamBox(aPergs, "Informe os parÃ¢metros")
+		// 		cENV144t := MV_PAR01
+		// 		cENV144v := MV_PAR02
+		// 		PUTMV("MV_ENV144T", cENV144t)
+		// 		PUTMV("MV_ENV144V", cENV144v)
 		// 	EndIf
 		// EndIF
-		 	cSel144t:= GETMV("MV_SEL144T")
-			cSel144v:= GETMV("MV_SEL144V")
+		 	cENV144t:= GETMV("MV_ENV144T")
+			cENV144v:= GETMV("MV_ENV144V")
 
-			aSel144t := Separa(cSel144t,",",.F.)
-			aSel144v := Separa(cSel144v,",",.F.)
+			aENV144t := Separa(cENV144t,",",.F.)
+			aENV144v := Separa(cENV144v,",",.F.)
 		If FwAlertNoYes(cPergunta, cTitulo)
-			conout("[START-SEL144]-> " + cValToChar(GetTimeStamp(Date())))
+			conout("[START-ENV144]-> " + cValToChar(GetTimeStamp(Date())))
 			Processa( { || DadosEmail() }, 'Processando dados...', 'Aguarde...')
 			// enviar e-mail para cada Transportadora
 			For nX:= 1 to Len(aShipping)
@@ -86,17 +86,17 @@ User Function SEL144()
 				Processa({||EmailVend(aSeller[nV][3], aSeller[nV][4], aSeller[nV][1])},'Enviando E-mail [' +cValToChar(nEnvVend)+ '] de [' +cValToChar(Len(aSeller))+ ']','Vendedor: ' + cValToChar(AllTrim(aSeller[nV][3]))+ CRLF + "E-mail: " + cValToChar(AllTrim(aSeller[nV][4])))
 				nEnvVend++
 			Next 
-			conout("[END-SEL144]-> " + cValToChar(GetTimeStamp(Date())))	
+			conout("[END-ENV144]-> " + cValToChar(GetTimeStamp(Date())))	
 		EndIF
 	Else
 		Prepare Environment Empresa '04' Filial '01'
-		conout("[START-JOB-SEL144]-> " + cValToChar(GetTimeStamp(Date())))
+		conout("[START-JOB-ENV144]-> " + cValToChar(GetTimeStamp(Date())))
 		DadosEmail()
-		cSel144t:= GETMV("MV_SEL144T")
-		cSel144v:= GETMV("MV_SEL144V")
+		cENV144t:= GETMV("MV_ENV144T")
+		cENV144v:= GETMV("MV_ENV144V")
 
-		aSel144t := Separa(cSel144t,",",.F.)
-		aSel144v := Separa(cSel144v,",",.F.)
+		aENV144t := Separa(cENV144t,",",.F.)
+		aENV144v := Separa(cENV144v,",",.F.)
 		// enviar e-mail para cada transportadora
 		For nX:= 1 to Len(aShipping)
 			aEmail    := {}
@@ -111,13 +111,13 @@ User Function SEL144()
 			aQtRegiao := {}	
 			EmailVend(aSeller[nV][3], aSeller[nV][4], AllTrim(aSeller[nV][1]))
 		Next
-		conout("[END-JOB-SEL144]-> " + cValToChar(GetTimeStamp(Date())))
+		conout("[END-JOB-ENV144]-> " + cValToChar(GetTimeStamp(Date())))
 		Reset Environment		
 	EndIf	
 Return 
 
 /*/{Protheus.doc} DadosEmail
-	Função para retronar os dados de trasnportadoras e vendedores
+	FunÃ§Ã£o para retronar os dados de trasnportadoras e vendedores
 	@author Vamilly - Jonivani
 	@since 19/01/2023
 /*/
@@ -276,7 +276,7 @@ Static Function DadosEmail()
 Return 
 
 /*/{Protheus.doc} EmailTrans
-	Função para enviar e-mail para as transportadoras
+	FunÃ§Ã£o para enviar e-mail para as transportadoras
 	@author Vamilly - Jonivani
 	@since 19/01/2023
 /*/
@@ -412,10 +412,10 @@ Static Function EmailTrans(cTransp, cCodTransp, cEnviar)
 
 	If Len(aEmail) > 0
 
-		cNota     := "Relação de Notas Fiscais não entregue, transportadora " + cValToChar(cTransp)
-		cAssunto  := "Relatório NF Não Entregue, transportadora " + cValToChar(cTransp)
+		cNota     := "RelaÃ§Ã£o de Notas Fiscais nÃ£o entregue, transportadora " + cValToChar(cTransp)
+		cAssunto  := "RelatÃ³rio NF NÃ£o Entregue, transportadora " + cValToChar(cTransp)
 		cPara     := AllTrim(cEnviar)
-		cCC       := cSel144t
+		cCC       := cENV144t
 		cFilter   := "1"
 		cAnexo    := GerAnexo(cFilter, aEmail, aEntregue) // 1- Transportadora 2- vendedor, Dados
 		cMensagem := LayoutEmail(aEmail, cNota, aQtStatus, aQtRegiao)
@@ -426,7 +426,7 @@ Static Function EmailTrans(cTransp, cCodTransp, cEnviar)
 Return
 
 /*/{Protheus.doc} EmailVend
-	Função para enviar e-mail para os vendedores
+	FunÃ§Ã£o para enviar e-mail para os vendedores
 	@author Vamilly - Jonivani
 	@since 19/01/2023
 /*/
@@ -442,10 +442,10 @@ Static Function EmailVend(cVendedor, cEnviar, cCodVend)
 	Local aEntregue  := {}
 	Local aGerent    := {}
 	Local cGerents   := ""
-	Local cNoEnvGer  := SupergetMv("SL_NSEL144", .F. , "163") // Gerentes que não querem receber copias. Passar os argumentos por BARRAS EX: 163/200
+	Local cNoEnvGer  := SupergetMv("SL_NENV144", .F. , "163") // Gerentes que nÃ£o querem receber copias. Passar os argumentos por BARRAS EX: 163/200
 	Local nA         := 0
 	
-    // START - Notas ficais não entregue
+    // START - Notas ficais nÃ£o entregue
     BeginSql AliAs cAlias
 		%NoParser%
         SELECT 
@@ -505,7 +505,7 @@ Static Function EmailVend(cVendedor, cEnviar, cCodVend)
         EndDo  
         (cAlias)->(DbCloseArea())
     EndIf
-	// END - Notas ficais não entregue
+	// END - Notas ficais nÃ£o entregue
 
 	// Start - Notas Ficais Entregues
 	 BeginSql AliAs cNfEntr
@@ -669,10 +669,10 @@ Static Function EmailVend(cVendedor, cEnviar, cCodVend)
 
 	If Len(aEmail) > 0
 		cAnexo    := ""
-		cNota     := "Relação de Notas Fiscais não entregue vendedor " + cValToChar(cVendedor)
-		cAssunto  := "Relatório NF Não Entregue, vendedor " + cValToChar(cVendedor)
+		cNota     := "RelaÃ§Ã£o de Notas Fiscais nÃ£o entregue vendedor " + cValToChar(cVendedor)
+		cAssunto  := "RelatÃ³rio NF NÃ£o Entregue, vendedor " + cValToChar(cVendedor)
 		cPara     := AllTrim(cEnviar)
-		cCC       := cSel144v + "," + cGerents
+		cCC       := cENV144v + "," + cGerents
 		cFilter   := "2"
 		cAnexo    := GerAnexo(cFilter, aEmail, aEntregue) // 1- Transportadora 2- vendedor, Dados
 		cMensagem := LayoutEmail(aEmail, cNota, aQtStatus, aQtRegiao)
@@ -683,7 +683,7 @@ Static Function EmailVend(cVendedor, cEnviar, cCodVend)
 Return
 
 /*/{Protheus.doc} LayoutEmail
-	Função para montar o html do e-mail
+	FunÃ§Ã£o para montar o html do e-mail
 	@author Vamilly - Jonivani
 	@since 19/01/2023
 /*/
@@ -695,12 +695,12 @@ Static Function LayoutEmail(aDados, cNota, aQtStatus, aQtRegiao)
 	Local cBodyTable    := ""
 	Local cTableSt      := ""
 	Local cTableCd      := ""
-	// Homologação:= D:\TOTVS12_TESTE\TOTVS12\Microsiga\Ambientes\teste_mrp\workflow\SEL144
-	// Prod       := D:\TOTVS12\Microsiga\Ambientes\Producao\workflow\SEL144
-	Local cArqIndex    := "\workflow\SEL144\index.html"
-	Local cArqItens    := "\workflow\SEL144\bodyTable.html"
-	Local cArqSt       := "\workflow\SEL144\bodyTableStatus.html"
-	Local cArqCd       := "\workflow\SEL144\bodyTableCidade.html"
+	// HomologaÃ§Ã£o:= D:\TOTVS12_TESTE\TOTVS12\Microsiga\Ambientes\teste_mrp\workflow\ENV144
+	// Prod       := D:\TOTVS12\Microsiga\Ambientes\Producao\workflow\ENV144
+	Local cArqIndex    := "\workflow\ENV144\index.html"
+	Local cArqItens    := "\workflow\ENV144\bodyTable.html"
+	Local cArqSt       := "\workflow\ENV144\bodyTableStatus.html"
+	Local cArqCd       := "\workflow\ENV144\bodyTableCidade.html"
 	Local nI           := 0
 	Local nX           := 0
 	Local nC           := 0
@@ -778,17 +778,17 @@ Static Function LayoutEmail(aDados, cNota, aQtStatus, aQtRegiao)
 	// Tabela de notas 
 	For nI := 1 to len(aDados)
 		//cDados := StrTran(cHtmlItDia,"@STATUS@"      ,alltrim(Transform(aDados[i][4],"@E 99,999,999.99"))
-		/* STATUS :=   	NÃO COLETADO EM ATRASO;
+		/* STATUS :=   	NÃƒO COLETADO EM ATRASO;
 						EM TRANSITO DENTRO DO PRAZO;
 						EM TRANSITO COM ATRASO;
 						ENTREGUE COM ATRASO;
 						FINALIZADO PRAZO;
-						NÃO COLETADO
+						NÃƒO COLETADO
 		*/
 
-		If AllTrim(aDados[nI][13]) == "EM SEPARAÇÃO"
+		If AllTrim(aDados[nI][13]) == "EM SEPARAÃ‡ÃƒO"
 			cClassStatus := "#6c757d"	
-		ElseIf AllTrim(aDados[nI][13]) == "NÃO COLETADO EM ATRASO"
+		ElseIf AllTrim(aDados[nI][13]) == "NÃƒO COLETADO EM ATRASO"
 			cClassStatus := "#dc3545"
 		ElseIf AllTrim(aDados[nI][13]) == "EM TRANSITO DENTRO DO PRAZO"
 			cClassStatus := "#17a2b8"
@@ -833,7 +833,7 @@ Static Function LayoutEmail(aDados, cNota, aQtStatus, aQtRegiao)
 Return cHtmlCompleto
 
 /*/{Protheus.doc} SendMail144
-	Função para enviar e-mail
+	FunÃ§Ã£o para enviar e-mail
 	@author Vamilly - Jonivani
 	@since 19/01/2023
 /*/
@@ -841,14 +841,14 @@ Static Function SendMail144(cPara, cAssunto, cMensagem, cAnexo,cFrom, cCC, cBCC)
 	Local oServer     := Nil
 	Local oMessage    := Nil
 	Local nErr        := 0
-	Local cSMTPAddr   := GetMV("MV_WFSMTP")         // Endereço SMTP "smtp.gmail.com" 
+	Local cSMTPAddr   := GetMV("MV_WFSMTP")         // EndereÃ§o SMTP "smtp.gmail.com" 
 	Local cPopAddr    := GetMV("MV_WFPOP3")	        // Pop3 "pop.gmail.com"
 	Local cPOPPort    := GetMV("MV_PORPOP3")        // Porta do servidor POP  110  
 	Local cSMTPPort   := GetMV("MV_PORSMTP")        // Porta do servidor SMTP 465  
 	Local nSMTPTime   := GetMV("MV_RELTIME")        // Timeout SMTP           120 
 	Local cUser       := GetMV("MV_RELAUSR")        // Usuario -> reports@selenasulamericana.com.br 
 	Local cPass       := "!Selena@2020*" //GetMV("MV_RELPSW")         // Senha   -> !Selena@2020*  
-    Local lTest       := GetMV("MV_XTESTNF", , .T.) //[.T.] Envia para e-mail controlado.,[.F.] Envia e-mail para email para usuarios do pedido e solicitação de compras.
+    Local lTest       := GetMV("MV_XTESTNF", , .T.) //[.T.] Envia para e-mail controlado.,[.F.] Envia e-mail para email para usuarios do pedido e solicitaÃ§Ã£o de compras.
 	Default cPara     := ""
 	Default cCC       := ""
 	Default cBCC      := ""
@@ -859,9 +859,9 @@ Static Function SendMail144(cPara, cAssunto, cMensagem, cAnexo,cFrom, cCC, cBCC)
 	lTest := .F.
 
 	If Empty(cPara)
-		conout("[ERROR]Email destino não definido.")
+		conout("[ERROR]Email destino nÃ£o definido.")
 		If !lJob
-			Alert("[ERROR]Email destino não definido.")
+			Alert("[ERROR]Email destino nÃ£o definido.")
 		Endif
 
 		return .F.
@@ -957,11 +957,11 @@ Static Function SendMail144(cPara, cAssunto, cMensagem, cAnexo,cFrom, cCC, cBCC)
 		If !lJob
         	Alert("[ERROR] Falha ao enviar: " + oServer:getErrorString(nErr))
 		EndIf
-		conout("SEL144->e-mail não enviados: " + cValToChar(cPara))
+		conout("ENV144->e-mail nÃ£o enviados: " + cValToChar(cPara))
 		oServer:smtpDisconnect()
 		return .F.
 	Else
-		conout("SEL144->e-mail enviados: " + cValToChar(cPara))
+		conout("ENV144->e-mail enviados: " + cValToChar(cPara))
 	endif
 
 	// Disconecta do Servidor
@@ -976,28 +976,28 @@ return .T.
 /*/
 Static Function GerAnexo(cFilter,aDados, aEntregue)
 
-	// Variáveis de notas ficais não entregues
+	// VariÃ¡veis de notas ficais nÃ£o entregues
     Local oTabNEntr  := Nil
 	Local aFilNEntr  := {}
     Local cTabNEntr  := ""
     Local cTabNEntr1 := ""
 	Local nA         := 0
 	Local cNFNENT    := ""
-	// Variáveis de notas ficais entregues
+	// VariÃ¡veis de notas ficais entregues
     Local oTabEntr   := Nil
 	Local aFilEntr   := {}
     Local cTabEntr   := ""
     Local cTabEntr1  := ""
 	Local nB         := 0
 	Local cNFENT     := ""
-	// Cria o diretório temporário dos boletos no server
-	// Local cDir       := "D:\TOTVS12\Microsiga\Ambientes\Producao\workflow\SEL144\anexo\"
-	Local cDir       := "\workflow\SEL144\anexo\"
+	// Cria o diretÃ³rio temporÃ¡rio dos boletos no server
+	// Local cDir       := "D:\TOTVS12\Microsiga\Ambientes\Producao\workflow\ENV144\anexo\"
+	Local cDir       := "\workflow\ENV144\anexo\"
 	Local cArq       := CriaTrab( , .F. ) + ".xls"
 	Local cAnexo     := ""	
 
 	// PEDIDO	DATA PDP	NF	DATA NF	TP FAT	TRANSP	PRZ ETG CONTRADO	CLIENTE	CIDADE	DATA ENVIO	PREVISAO	PROGRESSO	STATUS
-	//-----------Tabela Temporaria Para notas não entregues---------//
+	//-----------Tabela Temporaria Para notas nÃ£o entregues---------//
 		/*	aFilNEntr com estrutura de campos:
 			[1] Nome
 			[2] Tipo
@@ -1018,14 +1018,14 @@ Static Function GerAnexo(cFilter,aDados, aEntregue)
 	aadd(aFilNEntr, {"PREVISAO" , "C", TAMSX3("F2_DTENVI")[1] +2, TamSx3("F2_DTENVI")[2]})
 	aadd(aFilNEntr, {"STATUS"   , "C", TAMSX3("A1_NOME")[1]     , TamSx3("A1_NOME")[2]})
 
-	// Start - Cria tabela TMP Notas não entregue
+	// Start - Cria tabela TMP Notas nÃ£o entregue
 	cTabNEntr  := GetNextAlias()
 	oTabNEntr  := FWTemporaryTable():New(cTabNEntr, aFilNEntr)
 	oTabNEntr:Create()
 	cTabNEntr  := oTabNEntr:GetAlias()
 	cTabNEntr1 := '%' + oTabNEntr:GetRealName() + '%'
 
-	//Inserção de dados na tabela TMP 
+	//InserÃ§Ã£o de dados na tabela TMP 
 	DbSelectArea((cTabNEntr))
 	(cTabNEntr)->(DbGoTop())           
 	For nA := 1 to len(aDados)
@@ -1069,7 +1069,7 @@ Static Function GerAnexo(cFilter,aDados, aEntregue)
 	EndSQL
 
 	(cNFNENT)->(DbGoTop())
-	// End - Cria tabela TMP Notas não entregue
+	// End - Cria tabela TMP Notas nÃ£o entregue
 
 	// Adicona array para gerar planilha
 	aResult := {}
@@ -1094,14 +1094,14 @@ Static Function GerAnexo(cFilter,aDados, aEntregue)
 		aadd(aFilEntr, {"STATUS"   , "C", TAMSX3("A1_NOME")[1]     , TamSx3("A1_NOME")[2]})
 		aadd(aFilEntr, {"ENTREGA"  , "C", TAMSX3("F2_EMISSAO")[1]+2, TamSx3("F2_EMISSAO")[2]})
 
-		// Start - Cria tabela TMP Notas não entregue
+		// Start - Cria tabela TMP Notas nÃ£o entregue
 		cTabEntr  := GetNextAlias()
 		oTabEntr  := FWTemporaryTable():New(cTabEntr, aFilEntr)
 		oTabEntr:Create()
 		cTabEntr  := oTabEntr:GetAlias()
 		cTabEntr1 := '%' + oTabEntr:GetRealName() + '%'
 
-		//Inserção de dados na tabela TMP 
+		//InserÃ§Ã£o de dados na tabela TMP 
 		DbSelectArea((cTabEntr))
 		(cTabEntr)->(DbGoTop())           
 		For nB := 1 to len(aEntregue)
@@ -1160,7 +1160,7 @@ Static Function GerAnexo(cFilter,aDados, aEntregue)
 Return cAnexo
 
 /*/{Protheus.doc} ExcelEmail
-	Função para gravar arquivo excel
+	FunÃ§Ã£o para gravar arquivo excel
 	@author Vamilly - Jonivani
 	@since 19/01/2023
 /*/
@@ -1184,8 +1184,8 @@ Static Function  ExcelEmail(aDados, lOpen, cDir, cArq)
    
 	// Chamada sem dados
 	If Len(aDados) <= 0 
-        cMsg := "Não foi informardo nenhum alias para gerar planilha."
-        cSol := "Informar o alias para geração da planilha."
+        cMsg := "NÃ£o foi informardo nenhum alias para gerar planilha."
+        cSol := "Informar o alias para geraÃ§Ã£o da planilha."
 		conout("[ERROR] Falha ao enviar: " + cMsg)
 		If !lJob
         	Help(,, "xExcel",, cMsg, 1, 0, Nil, Nil, Nil, Nil, Nil, {cSol})
